@@ -53,11 +53,24 @@ var dServ;
 var dRend;
 function initMap() {
 
+/*
+if (navigator.geolocation) {
+	navigator.geolocation.getCurrentPosition(
+		function(position) {
+			var mapLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		}
+	)
+}
+*/
+
+
 	map = new google.maps.Map(document.getElementById('map'), {
+/*
 		center: {
 			lat: 35.47131841901187,
 			lng: 139.4283853703149
 		},
+*/
 		zoom: 17
 	});
 	behaviorSearchBox(map);
