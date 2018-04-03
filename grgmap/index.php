@@ -24,9 +24,18 @@
 	height: 100%;
 }
 
-#map{
-    width: 100%;
-	height: 100%;
+#map_ov{
+    width: 600px;
+	height: 350px;
+}
+
+#map_zm{
+    width: 600px;
+	height: 350px;
+}
+
+#bar{
+	height: 10px;
 }
 
 </style>
@@ -39,14 +48,17 @@
 	<div id="side">
 	</div>
 	<div id="main">
-		<div id="map"></div>
+		<div id="map_ov"></div>
 		<input id="pac-input" class="controls" type="text" placeholder="Search Box" />
+		<div id="bar"></div>
+		<div id="map_zm"></div>
 	</div>
 
 </div>
 
 <script>
-var map;
+var map_ov;
+var map_zm;
 var markerHome;
 var markerGrge;
 var dServ; 
@@ -63,17 +75,14 @@ if (navigator.geolocation) {
 }
 */
 
-
-	map = new google.maps.Map(document.getElementById('map'), {
-/*
+	map_ov = new google.maps.Map(document.getElementById('map_ov'), {
 		center: {
 			lat: 35.47131841901187,
 			lng: 139.4283853703149
 		},
-*/
 		zoom: 17
 	});
-	behaviorSearchBox(map);
+	behaviorSearchBox(map_ov);
 
 /*
 	// change a color to grayscale
@@ -83,13 +92,13 @@ if (navigator.geolocation) {
 		]
 	}];
 	var mapType = new google.maps.StyledMapType(mapStyle);
-	map.mapTypes.set('GrayScaleMap', mapType);
-	map.setMapTypeId('GrayScaleMap');
+	map_ov.mapTypes.set('GrayScaleMap', mapType);
+	map_ov.setMapTypeId('GrayScaleMap');
 */
 
 	dServ = new google.maps.DirectionsService(); 
 	dRend = new google.maps.DirectionsRenderer({
-		map: map,
+		map: map_ov,
 		preserveViewport: true,
 		draggable: true,
 		suppressMarkers: true,
@@ -101,8 +110,8 @@ if (navigator.geolocation) {
 	});
 
 	var markerHome = new google.maps.Marker( {
-		map: map ,
-		position: map.getCenter() ,
+		map: map_ov ,
+		position: map_ov.getCenter() ,
 		draggable: true ,
 		label: {
 			text: "宅",
@@ -111,8 +120,8 @@ if (navigator.geolocation) {
 	});
 
 	var markerGrge = new google.maps.Marker( {
-		map: map ,
-		position: map.getCenter() ,
+		map: map_ov ,
+		position: map_ov.getCenter() ,
 		draggable: true ,
 		label: {
 			text: "駐",
@@ -131,6 +140,69 @@ if (navigator.geolocation) {
 		consoleMarkerPos(arg);
 		render(markerHome, markerGrge);
 	});
+
+	//----------
+	// 2nd map
+	//----------
+	map_zm = new google.maps.Map(document.getElementById('map_zm'), {
+		center: {
+			lat: 35.47131841901187,
+			lng: 139.4283853703149
+		},
+		zoom: 17
+	});
+
+	var drawingManager = new google.maps.drawing.DrawingManager({
+		drawingMode: google.maps.drawing.OverlayType.PAN,
+		drawingControl: true,                            
+		drawingControlOptions: {
+			position: google.maps.ControlPosition.TOP_CENTER, 
+			drawingModes: ['marker', 'circle', 'polygon', 'polyline', 'rectangle']
+//			drawingModes: ['circle']
+		},
+/*
+		markerOptions: {
+			icon: {
+				url: '../common/img/ms/pin_02.png',
+				scaledSize: new google.maps.Size(40, 40)
+			}
+		},
+*/
+		circleOptions: {
+			clickable: false,
+			editable: true,
+			zIndex: 1
+		},
+		polygonOptions: {
+//			fillColor: '#ff00ff',
+//			fillOpacity: 1,
+//			strokeWeight: 5,
+			clickable: false,
+			editable: true,
+			zIndex: 1
+		},
+/*
+	rectangleOptions: {
+		fillColor: '#0000ff',
+		fillOpacity: 1,
+		strokeWeight: 5,
+		clickable: true,
+		editable: true,
+		zIndex: 1
+	},
+	polylineOptions: {
+		strokeColor: '#ff0000',
+		strokeWeight: 5,
+		clickable: false,
+		editable: true,
+		zIndex: 1
+	}
+*/
+	});
+	drawingManager.setMap(map_zm);
+
+
+
 
 }
 
@@ -157,7 +229,7 @@ function render(markerHome, markerGrge) {
 
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap&key=<?php echo $gmapapikey1; ?>"></script>
+<script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap&key=<?php echo $gmapapikey1; ?>&libraries=drawing,places"></script>
 
 </body>
 </body>
